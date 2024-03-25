@@ -32,7 +32,7 @@ def main():
     client = database_connect.connect(db_type=db_type)
     recset = client.get_all()
     if recset:
-        return recset 
+        return recset, 200
     return {}, 404
 
 # @app.get('/graphql')
@@ -48,7 +48,7 @@ def create():
         return {}, 201
     return {}, 404
 
-@app.put('/')
+@app.put('/<id: int>')
 def update():
     client = database_connect.connect(db_type=db_type)
 

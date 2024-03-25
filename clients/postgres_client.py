@@ -10,9 +10,9 @@ class Client:
     
     def __exit__(self):
         self.connection.close()
-
+ 
     def insert_one(self, value: str) -> bool:
-        sql = f'INSERT INTO {self.table} (name, checked) VALUES (%s, false) RETURNING id'
+        sql = f'INSERT INTO {self.table} (name, checked) VALUES (\'%s\', false) RETURNING id'
         self.cursor.execute(sql, (value))
         self.connection.commit()
         result = self.cursor.fetchone()
