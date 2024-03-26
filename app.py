@@ -22,6 +22,7 @@ print(f'{db_type.upper()} SELECTED!')
 
 @app.get('/')
 def main():
+    return {}
     client = database_connect.connect(db_type=db_type)
 
     recset = client.get_all()
