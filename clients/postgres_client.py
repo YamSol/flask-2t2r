@@ -2,7 +2,8 @@ from psycopg2 import connect
 from psycopg2.extensions import Column
 import os
 
-DATABASE_URL = os.environ['DATABASE_URL']
+# DATABASE_URL = os.environ['DATABASE_URL']
+DATABASE_URL = '${{ Postgres.DATABASE_URL }}'
 
 class Client:
     def __init__(self, database: str, table: str, host='localhost', port='5432'):
