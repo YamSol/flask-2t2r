@@ -1,10 +1,13 @@
 from psycopg2 import connect
 from psycopg2.extensions import Column
+import os
+
+DATABASE_URL = os.environ('DATABASE_URL')
 
 class Client:
     def __init__(self, database: str, table: str, host='localhost', port='5432'):
-        self.connection = connect(host=host, port=port, database=database, 
-                                  user='postgres', password='')
+        self.connection = connect(DATABASE_URL, sslmode='require', user='postgres', password='') #host=host, port=port, database=database, 
+                                  
         self.cursor = self.connection.cursor()
         self.table = table
     
