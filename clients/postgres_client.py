@@ -11,37 +11,54 @@ class Client:
     def __exit__(self):
         self.connection.close()
 
-    def insert_one(self, value: str) -> bool:
-        sql = f'INSERT INTO {self.table} (name, checked) VALUES (%s, false) RETURNING id'
-        self.cursor.execute(sql, (value))
-        self.connection.commit()
-        result = self.cursor.fetchone()
-        if result:
-            return True
-        return False
-    
     def __convert_to_dict(self, rv):
         row_headers = [x[0] for x in self.cursor.description]
         return [dict(zip(row_headers, row_values)) for row_values in rv]
 
     def get_all(self):
-        sql = f'select * from {self.table}'
+        sql = f'select * from {self.table} order by id'
         self.cursor.execute(sql)
         rv =  self.cursor.fetchall()
         return self.__convert_to_dict(rv)
 
-    def update_by_id(self, value_name: str, value: str, id: str) -> bool:
-        sql = f'UPDATE {self.table} SET %s = %s WHERE id = %s RETURNING id'
-        self.cursor.execute(sql, (value_name, value, id, ))
+    def insert_one(self, params: dict) -> bool:
+        # create string of values and keys
+        vals = '('
+        keys = '('
+        for key, val in params.items():
+            if val is not None:
+                vals += f"'{str(val)}',"
+                keys += key+','
+        vals = vals[:-1]
+        keys = keys[:-1]
+        vals += ')'
+        keys += ')'
+
+        sql = f'INSERT INTO {self.table} {keys} VALUES {vals} RETURNING id'
+        self.cursor.execute(sql)
+        self.connection.commit()
+        result = self.cursor.fetchone()
+        if result:
+            return True
+        return False
+
+    def update_by_id(self, params: dict, id) -> bool:
+        sets = ''
+        for key, val in params.items():
+            if val is not None:
+                sets += f"{key} = '{str(val)}',"
+        sets = sets[:-1]
+        sql = f'UPDATE {self.table} SET {sets} WHERE id = {id} RETURNING id'
+        self.cursor.execute(sql)
         self.connection.commit()
         result = self.cursor.fetchone()
         if result:
             return True
         return False
     
-    def delete_by_id(self, id: str) -> bool:
-        sql = f'DELETE FROM {self.table} WHERE id = %s RETURNING id'
-        self.cursor.execute(sql, (id))
+    def delete_by_id(self, id) -> bool:
+        sql = f'DELETE FROM {self.table} WHERE id = {id} RETURNING id'
+        self.cursor.execute(sql)
         self.connection.commit()
         result = self.cursor.fetchone()
         if result:

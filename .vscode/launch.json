@@ -9,7 +9,7 @@
             "type": "debugpy",
             "request": "launch",
             "program": "./app.py",
-            "args": ["--db-type", "mariadb"],
+            "args": ["--db-type", "postgres"],
             "console": "integratedTerminal"
         }
     ]
