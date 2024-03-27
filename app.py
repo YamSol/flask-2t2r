@@ -1,6 +1,6 @@
 from flask import Flask, request
 import sys
-import database_connect
+from database_connect import connect
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -21,7 +21,7 @@ db_type = get_db_type()
 
 @app.get('/')
 def main():
-    client = database_connect.connect(db_type=db_type)
+    client = connect(db_type=db_type)
 
     recset = client.get_all()
     if recset:
@@ -30,7 +30,7 @@ def main():
 
 @app.post('/')
 def create():
-    client = database_connect.connect(db_type=db_type)
+    client = connect(db_type=db_type)
     
     params = {}
     params['name'] = request.json.get('name')
@@ -44,7 +44,7 @@ def create():
 
 @app.put('/<int:id>')
 def update(id):
-    client = database_connect.connect(db_type=db_type)
+    client = connect(db_type=db_type)
 
     params = {}
     params['checked'] = request.json.get('checked')
@@ -59,7 +59,7 @@ def update(id):
 
 @app.delete('/<int:id>')
 def delete(id):
-    client = database_connect.connect(db_type=db_type)
+    client = connect(db_type=db_type)
 
     response = client.delete_by_id(id=id)
     if response:
