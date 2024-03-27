@@ -5,20 +5,19 @@ import database_connect
 app = Flask(__name__)
 app.config["DEBUG"] = True
 
-db_types = ['postgres',
-            'mongodb',
-            'mariadb',
-            'mysql'
-            ]
+def get_db_type():
+    db_types = ['postgres','mongodb','mariadb','mysql']
+    db_type = db_types[0]; # default value
 
-db_type = db_types[0]; # default value
+    if '--db-type' in sys.argv:
+        next = sys.argv.index('--db-type') + 1
+        if sys.argv[next] in db_types:
+            db_type = sys.argv[next]
+            
+    print(f'{db_type.upper()} SELECTED!')
+    return db_type
 
-if '--db-type' in sys.argv:
-    next = sys.argv.index('--db-type') + 1
-    if sys.argv[next] in db_types:
-        db_type = sys.argv[next]
-        
-print(f'{db_type.upper()} SELECTED!')
+db_type = get_db_type()
 
 @app.get('/')
 def main():
