@@ -1,6 +1,8 @@
 from flask import Flask, request
 import sys
 from database_connect import connect
+from strawberry.flask.views import GraphQLView
+from api.schema import schema
 
 app = Flask(__name__)
 app.config["DEBUG"] = True
@@ -18,6 +20,11 @@ def get_db_type():
     return db_type
 
 db_type = get_db_type()
+
+app.add_url_rule(
+    "/graphql",
+    view_func=GraphQLView.as_view("graphql_view", schema=schema)
+)
 
 @app.get('/')
 def main():
@@ -66,10 +73,6 @@ def delete(id):
     if response:
         return {}, 204 # For a DELETE request: HTTP 200 or HTTP 204 should imply "resource deleted successfully".
     return {}, 404
-
-# @app.get('/graphql')
-# def graphql():
-#     return 200
 
 if __name__ == "__main__":
     app.run()
