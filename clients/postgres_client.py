@@ -16,7 +16,7 @@ class Client:
     def __exit__(self):
         self.connection.close()
 
-    def __convert_to_dict(self, rv):
+    def __to_list_of_dict(self, rv: list) -> list[dict]:
         row_headers = [x[0] for x in self.cursor.description]
         return [dict(zip(row_headers, row_values)) for row_values in rv]
 
@@ -24,7 +24,7 @@ class Client:
         sql = f'select * from {self.table} order by id'
         self.cursor.execute(sql)
         rv =  self.cursor.fetchall()
-        return self.__convert_to_dict(rv)
+        return self.__to_list_of_dict(rv)
 
     def insert_one(self, params: dict) -> bool:
         # create string of values and keys
