@@ -24,6 +24,7 @@ def main():
     client = connect(db_type=db_type)
 
     recset = client.get_all()
+    recset = {'tasks':recset}
     if recset:
         return recset, 200
     return {}, 404
